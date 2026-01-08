@@ -25,7 +25,7 @@ public class WeaponMod {
         ModItems.ITEMS.register(modEventBus);
         ModTabs.CREATIVE_TABS.register(modEventBus);
         ModEffects.EFFECTS.register(modEventBus);
-        ModEntities.ENTITY_TYPES.register(modEventBus);
+        ModEntities.register(modEventBus);
         modEventBus.addListener(this::onCommonSetup);
     }
 

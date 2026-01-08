@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @EventBusSubscriber(modid = "weaponmod")
 public class EventHandler {
-//    @SubscribeEvent
+    @SubscribeEvent
     public static void onPlayerHurt(LivingIncomingDamageEvent event) {
         if(!(event.getEntity() instanceof Player player)) return;
         if(!(event.getSource().getEntity() instanceof LivingEntity)) return;

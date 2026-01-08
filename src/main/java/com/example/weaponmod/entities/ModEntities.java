@@ -2,13 +2,16 @@ package com.example.weaponmod.entities;
 
 import com.example.weaponmod.WeaponMod;
 import com.example.weaponmod.entities.custom.BlackFireBallEntity;
+import com.example.weaponmod.entities.custom.TestMonster;
 import com.example.weaponmod.entities.renderer.BlackFireBallGeoRenderer;
+import com.example.weaponmod.entities.renderer.TestMonsterGeoRenderer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -23,12 +26,24 @@ public class ModEntities {
                             .updateInterval(10)
                             .build("black_fire_ball"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<TestMonster>> TEST_MONSTER =
+            ENTITY_TYPES.register("test_monster",
+                    () -> EntityType.Builder.of(TestMonster::new, MobCategory.MONSTER)
+                            .sized(0.6f, 1.95f)
+                            .build("test_monster"));
+
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);
         eventBus.addListener(ModEntities::registerRenderers);
+        eventBus.addListener(ModEntities::registerAttributes);
     }
 
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(BLACK_FIRE_BALL.get(), BlackFireBallGeoRenderer::new);
+        event.registerEntityRenderer(TEST_MONSTER.get(), TestMonsterGeoRenderer::new);
+    }
+
+    public static void registerAttributes(EntityAttributeCreationEvent event) {
+        event.put(TEST_MONSTER.get(), TestMonster.createAttributes().build());
     }
 }
