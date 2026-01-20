@@ -140,11 +140,6 @@ public class TestMonster extends Monster implements GeoEntity {
         return PlayState.STOP;
     }
 
-    // 辅助方法
-    public boolean isTargeting() {
-        return currentState == BossState.TARGETING;
-    }
-
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
                 .add(Attributes.MAX_HEALTH, 300.0)
