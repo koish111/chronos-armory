@@ -1,10 +1,16 @@
 package com.example.weaponmod.items.custom;
 
+import com.example.weaponmod.entities.ModEntities;
+import com.example.weaponmod.entities.custom.NullBladeDash;
 import com.example.weaponmod.items.renderer.NullBladeRenderer;
+import com.example.weaponmod.network.ChargeSyncPacket;
+import com.example.weaponmod.weaponskill.ChargeManager;
+import com.example.weaponmod.weaponskill.DashManager;
 import com.example.weaponmod.weaponskill.SkillManager;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -34,9 +40,13 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class NullBlade extends SwordItem implements GeoItem {
+    public static final ResourceLocation WEAPON_ID = ResourceLocation.fromNamespaceAndPath("weaponmod", "null_blade");
+    public static final int MAX_CHARGE = 450;
+
     public NullBlade() {
         super(Tiers.NETHERITE, new SwordItem.Properties().
                 attributes(SwordItem.createAttributes(Tiers.NETHERITE, 7, -2.3f)));
+        ChargeManager.registerWeapon(WEAPON_ID, MAX_CHARGE);
     }
 
     private static final RawAnimation ACTIVATE_ANIM = RawAnimation.begin().thenPlay("idle");
@@ -108,6 +118,12 @@ public class NullBlade extends SwordItem implements GeoItem {
             }
         }
 
+        // 手持造成伤害时获得等量充能（V键技能伤害不计入）
+        if (attacker instanceof Player playerAttacker && !level.isClientSide()) {
+            float baseDmg = (float) attacker.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE);
+            ChargeManager.addCharge(playerAttacker, WEAPON_ID, Math.round(baseDmg + 3.0f));
+        }
+
         return result;
     }
 
@@ -115,50 +131,80 @@ public class NullBlade extends SwordItem implements GeoItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         ItemStack stack = player.getItemInHand(usedHand);
         if (!level.isClientSide()) {
-            // 获取玩家视线起点和方向
-            Vec3 eyePos = player.getEyePosition(1.0f);
-            Vec3 lookVec = player.getLookAngle();
-            double range = 8.0; // 检测范围
+            DashManager.startDash(player, stack);
 
-            // 创建射线检测上下文
-            ClipContext context = new ClipContext(eyePos, eyePos.add(lookVec.scale(range)),
-                    ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player);
+            player.getCooldowns().addCooldown(stack.getItem(), 20);
+            player.sendSystemMessage(Component.literal("已冲刺"));
 
-            // 先检测方块碰撞
-            BlockHitResult blockHit = level.clip(context);
-            Vec3 hitPos = blockHit.getLocation();
 
-            // 初始化目标实体为null
-            LivingEntity targetEntity = null;
+            // ===== 生成特效 =====
+            NullBladeDash effect = new NullBladeDash(ModEntities.NULL_BLADE_DASH.get(), level);
 
-            // 实体检测
-            EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(
-                    level,
-                    player,
-                    eyePos,
-                    eyePos.add(lookVec.scale(range)),
-                    new AABB(eyePos, eyePos.add(lookVec.scale(range))),
-                    entity -> entity instanceof LivingEntity && entity != player && entity.isAttackable()
+            Vec3 look = player.getLookAngle();
+            effect.setPos(
+                    player.getX() + look.x * 1.0,
+                    player.getY() + 1.0,
+                    player.getZ() + look.z * 1.0
             );
 
-            // 如果检测到可攻击的活体实体
-            if (entityHit != null && entityHit.getEntity() instanceof LivingEntity livingEntity) {
-                targetEntity = livingEntity;
-                hitPos = livingEntity.position(); // 使用实体位置作为技能中心点
-            }
-
-            // 启动技能并传入目标实体
-            SkillManager.startSkill(player, hitPos, targetEntity);
-
-            // 冷却和反馈
-            player.getCooldowns().addCooldown(this, 20 * 10);
-            if (targetEntity != null) {
-                player.sendSystemMessage(Component.literal("锁定目标: " + targetEntity.getName().getString()));
-            } else {
-                player.sendSystemMessage(Component.literal("已触发技能"));
-            }
+            effect.setYRot(player.getYRot());
+            effect.setXRot(player.getXRot());
+            level.addFreshEntity(effect);
         }
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+    }
+
+    public static void activateSkill(Player player) {
+        Level level = player.level();
+        if (level.isClientSide()) return;
+
+        // 检查充能（满MAX_CHARGE点才能释放）
+        if (!ChargeManager.tryConsumeFull(player, WEAPON_ID)) {
+            int current = ChargeManager.getCharge(player, WEAPON_ID);
+            player.sendSystemMessage(Component.literal("§c充能不足 (" + current + "/" + ChargeManager.getMaxCharge(WEAPON_ID) + ")"));
+            return;
+        }
+
+        // 获取玩家视线起点和方向
+        Vec3 eyePos = player.getEyePosition(1.0f);
+        Vec3 lookVec = player.getLookAngle();
+        double range = 8.0; // 检测范围
+
+        // 创建射线检测上下文
+        ClipContext context = new ClipContext(eyePos, eyePos.add(lookVec.scale(range)),
+                ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player);
+
+        // 先检测方块碰撞
+        BlockHitResult blockHit = level.clip(context);
+        Vec3 hitPos = blockHit.getLocation();
+
+        // 初始化目标实体为null
+        LivingEntity targetEntity = null;
+
+        // 实体检测
+        EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(
+                level,
+                player,
+                eyePos,
+                eyePos.add(lookVec.scale(range)),
+                new AABB(eyePos, eyePos.add(lookVec.scale(range))),
+                entity -> entity instanceof LivingEntity && entity != player && entity.isAttackable()
+        );
+
+        // 如果检测到可攻击的活体实体
+        if (entityHit != null && entityHit.getEntity() instanceof LivingEntity livingEntity) {
+            targetEntity = livingEntity;
+            hitPos = livingEntity.position(); // 使用实体位置作为技能中心点
+        }
+
+        // 启动技能并传入目标实体
+        SkillManager.startSkill(player, hitPos, targetEntity);
+
+        if (targetEntity != null) {
+            player.sendSystemMessage(Component.literal("锁定目标: " + targetEntity.getName().getString()));
+        } else {
+            player.sendSystemMessage(Component.literal("已触发技能"));
+        }
     }
 
     @Override
@@ -181,6 +227,12 @@ public class NullBlade extends SwordItem implements GeoItem {
         tooltipComponents.add(Component.translatable("\n"));
         tooltipComponents.add(Component.translatable("item.weaponmod.null_katana.tooltip.line5th"));
         tooltipComponents.add(Component.translatable("item.weaponmod.null_katana.tooltip.line6th"));
+
+        // 显示充能
+        int charge = ChargeSyncPacket.clientCharges.getOrDefault(WEAPON_ID, 0);
+        int max = ChargeSyncPacket.clientMaxCharges.getOrDefault(WEAPON_ID, MAX_CHARGE);
+        tooltipComponents.add(Component.literal("§7充能: §e" + charge + "§7/§e" + max));
+
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 

@@ -1,0 +1,8 @@
+{
+  "null_blade_skill_sound": {
+    "subtitle": "subtitles.weaponmod.null_blade_skill_sound",
+    "sounds": [
+      "weaponmod:null_blade_skill_sound"
+    ]
+  }
+}

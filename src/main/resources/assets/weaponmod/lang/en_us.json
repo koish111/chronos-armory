@@ -2,5 +2,8 @@
   "itemGroup.neo_weaponmod": "Weapon Mod",
   "item.weaponmod.raw_ruby": "Raw ruby",
   "item.weaponmod.ruby": "Ruby",
-  "item.weaponmod.naginata_sword": "Naginata"
+  "item.weaponmod.naginata_sword": "Naginata",
+  "item.weaponmod.null_katana": "§4Null",
+  "key.weaponmod.null_blade_skill": "Null Blade Skill",
+  "category.weaponmod": "Weapon Mod"
 }

@@ -14,5 +14,7 @@
   "item.weaponmod.null_katana.tooltip.line5th": "§d主动技能：",
   "item.weaponmod.null_katana.tooltip.line6th": "§d对自身周围8米内的瞄准位置周围4米内的所有敌人造成12点伤害，重复六次。当你以敌人为目标时，会对该敌人触发一次斩杀。冷却10秒。",
   "effect.weaponmod.shield": "护盾",
-  "entity.weaponmod.test_monster": "测试怪物"
+  "entity.weaponmod.test_monster": "测试怪物",
+  "key.weaponmod.null_blade_skill": "空之刃·技能",
+  "category.weaponmod": "武器Mod"
 }

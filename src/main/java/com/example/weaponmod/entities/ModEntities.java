@@ -2,14 +2,13 @@ package com.example.weaponmod.entities;
 
 import com.example.weaponmod.WeaponMod;
 import com.example.weaponmod.entities.custom.BlackFireBallEntity;
-import com.example.weaponmod.entities.custom.TestMonster;
+import com.example.weaponmod.entities.custom.NullBladeDash;
 import com.example.weaponmod.entities.renderer.BlackFireBallGeoRenderer;
-import com.example.weaponmod.entities.renderer.TestMonsterGeoRenderer;
+import com.example.weaponmod.entities.renderer.NullBladeDashRenderer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -26,24 +25,22 @@ public class ModEntities {
                             .updateInterval(10)
                             .build("black_fire_ball"));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<TestMonster>> TEST_MONSTER =
-            ENTITY_TYPES.register("test_monster",
-                    () -> EntityType.Builder.of(TestMonster::new, MobCategory.MONSTER)
-                            .sized(0.6f, 1.95f)
-                            .build("test_monster"));
+    public static final DeferredHolder<EntityType<?>, EntityType<NullBladeDash>> NULL_BLADE_DASH =
+            ENTITY_TYPES.register("null_blade_dash",
+                    () -> EntityType.Builder.of(NullBladeDash::new, MobCategory.MISC)
+                            .sized(1.0f, 1.0f)
+                            .clientTrackingRange(8)
+                            .updateInterval(1)
+                            .build("null_blade_dash")
+            );
 
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);
         eventBus.addListener(ModEntities::registerRenderers);
-        eventBus.addListener(ModEntities::registerAttributes);
     }
 
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(BLACK_FIRE_BALL.get(), BlackFireBallGeoRenderer::new);
-        event.registerEntityRenderer(TEST_MONSTER.get(), TestMonsterGeoRenderer::new);
-    }
-
-    public static void registerAttributes(EntityAttributeCreationEvent event) {
-        event.put(TEST_MONSTER.get(), TestMonster.createAttributes().build());
+        event.registerEntityRenderer(NULL_BLADE_DASH.get(), NullBladeDashRenderer::new);
     }
 }

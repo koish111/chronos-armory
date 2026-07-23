@@ -1,6 +1,9 @@
 package com.example.weaponmod.weaponskill;
 
+import com.example.weaponmod.particles.ModParticles;
+import com.example.weaponmod.pojo.NullBladeParticleOption;
 import com.example.weaponmod.pojo.SkillData;
+import com.example.weaponmod.sounds.ModSounds;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -11,7 +14,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 public class SkillManager {
@@ -24,7 +26,7 @@ public class SkillManager {
         }
     }
 
-    public static void startSkill(Player player, Vec3 center, @Nullable LivingEntity target) {
+    public static void startSkill(Player player, Vec3 center, LivingEntity target) {
         if (!player.level().isClientSide && player instanceof ServerPlayer) {
             activeSkills.put(player.getUUID(), new SkillData(center, player.level().getGameTime(), target));
         }
@@ -47,22 +49,46 @@ public class SkillManager {
             Player player = level.getPlayerByUUID(playerId);
             if (player == null) continue;
 
-            // 保证只在技能起始维度处理
             if (!player.level().dimension().equals(level.dimension())) continue;
 
+            // 依照技能中的伤害间隔（每5 tick）触发一次
             if (currentTime - data.lastTriggerTime >= 5) {
                 data.lastTriggerTime = currentTime;
                 data.timesDone++;
 
-                // 第一次触发时对瞄准的目标执行斩杀效果
+                // 1. 在半径 4.0 的圆内随机生成一个位置角度
+                double spawnAngle = level.random.nextDouble() * 2 * Math.PI;
+                // 2. 随机分布在圆盘内（使用 sqrt 保证均匀分布，或者直接 random 保证靠近圆心多一点）
+                double dist = Math.sqrt(level.random.nextDouble()) * 4.0;
+
+                double offsetX = Math.cos(spawnAngle) * dist;
+                double offsetZ = Math.sin(spawnAngle) * dist;
+                double particleY = data.center.y + 0.2 + level.random.nextDouble() * 0.5; // 稍微浮动高度
+
+                // 3. 计算径向旋转角度
+                float baseRoll = (float) Math.toDegrees(-spawnAngle);
+                float finalRoll = baseRoll + (level.random.nextFloat() * 40f - 20f);
+
+                // 4. 发送粒子
+                NullBladeParticleOption particleOptions = new NullBladeParticleOption(finalRoll);
+
+                level.sendParticles(
+                        particleOptions,
+                        data.center.x + offsetX, particleY, data.center.z + offsetZ,
+                        0,      // count=0 此处无所谓，因为 roll 已由 options 承载
+                        0.0, 0.0, 0.0,  // dx/dy/dz 不再用于传递角度，全部清零
+                        0.0     // speed 也清零，避免粒子产生意外位移
+                );
+
+                // --- 伤害与效果逻辑 ---
+
                 if (data.timesDone == 1 && data.target != null && data.target.isAlive()) {
                     executeTarget(player, data.target);
                 }
 
-                // 原有区域伤害逻辑
                 AABB area = new AABB(
-                        data.center.x - 4.0, data.center.y - 4.0, data.center.z - 4.0,
-                        data.center.x + 4.0, data.center.y + 4.0, data.center.z + 4.0
+                        data.center.x - 4.0, data.center.y - 1.0, data.center.z - 4.0,
+                        data.center.x + 4.0, data.center.y + 2.0, data.center.z + 4.0
                 );
 
                 List<LivingEntity> enemies = level.getEntitiesOfClass(LivingEntity.class, area,
@@ -75,8 +101,11 @@ public class SkillManager {
                     enemy.invulnerableTime = originTime;
                 }
 
-                // 绘制粒子圆
-                drawParticleCircle(level, data.center, 4.0, 120);
+                // 每一段伤害生成时，绘制一次圆环强调范围
+                drawParticleCircle(level, data.center, 4.0, 60); // 降低点数减少卡顿
+
+                level.playSound(null, data.center.x, data.center.y, data.center.z,
+                        ModSounds.NULL_BLADE_SOUND.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
             }
         }
     }
