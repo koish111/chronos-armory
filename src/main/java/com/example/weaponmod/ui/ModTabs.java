@@ -24,5 +24,6 @@ public class ModTabs {
                         output.accept(ModItems.TEST_SWORD.get());
                         output.accept(ModItems.NULL_BLADE.get());
                         output.accept(ModItems.MOON_MARROW_SCYTHE.get());
+                        output.accept(ModItems.ANTARES_RAPIER.get());
                     }).build());
 }

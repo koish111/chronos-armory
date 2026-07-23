@@ -17,5 +17,6 @@
   "entity.weaponmod.test_monster": "测试怪物",
   "key.weaponmod.null_blade_skill": "空之刃·技能",
   "category.weaponmod": "武器Mod",
-  "item.weaponmod.moon_marrow_scythe": "§b月髓"
+  "item.weaponmod.moon_marrow_scythe": "§b月髓",
+  "item.weaponmod.antares_rapier": "§c流火之熄"
 }

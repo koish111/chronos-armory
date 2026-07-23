@@ -21,6 +21,7 @@ public class ModItems {
     public static final DeferredItem<Item> TEST_SWORD = registerItem("test_sword", TestSword::new);
     public static final DeferredItem<Item> NULL_BLADE = registerItem("null_katana", NullBlade::new);
     public static final DeferredItem<Item> MOON_MARROW_SCYTHE = registerItem("moon_marrow_scythe", MoonMarrowScythe::new);
+    public static final DeferredItem<Item> ANTARES_RAPIER = registerItem("antares_rapier", AntaresRapier::new);
 
 
     public static DeferredItem<Item> registerItem(String name, Supplier<Item> itemSupplier) {
