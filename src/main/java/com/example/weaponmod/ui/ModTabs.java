@@ -28,5 +28,6 @@ public class ModTabs {
                         output.accept(ModItems.AZURE_MOUNTAINS_MASHER.get());
                         output.accept(ModItems.GREAT_APPLE.get());
                         output.accept(ModItems.PERPETUAL_NIGHT_STAR.get());
+                        output.accept(ModItems.CYAN_FROST_VIOLET_VOLT.get());
                     }).build());
 }
