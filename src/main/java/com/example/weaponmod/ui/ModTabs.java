@@ -27,5 +27,6 @@ public class ModTabs {
                         output.accept(ModItems.ANTARES_RAPIER.get());
                         output.accept(ModItems.AZURE_MOUNTAINS_MASHER.get());
                         output.accept(ModItems.GREAT_APPLE.get());
+                        output.accept(ModItems.PERPETUAL_NIGHT_STAR.get());
                     }).build());
 }
