@@ -2,89 +2,84 @@
   "credit": "Made with Blockbench",
   "parent": "builtin/entity",
   "texture_size": [
-    32,
-    32
+    64,
+    64
   ],
   "textures": {
-    "0": "item/null_katana",
-    "particle": "item/null_katana"
+    "0": "item/moon_marrow_scythe",
+    "particle": "item/moon_marrow_scythe"
   },
   "display": {
     "thirdperson_righthand": {
-      "rotation": [
-        0,
-        -90,
-        0
-      ],
       "translation": [
         0,
-        -9,
-        0.5
+        -23,
+        0
       ]
     },
     "thirdperson_lefthand": {
-      "rotation": [
-        0,
-        90,
-        0
-      ],
       "translation": [
         0,
-        -9,
-        0.5
+        -23,
+        0
       ]
     },
     "firstperson_righthand": {
       "rotation": [
+        -16,
         0,
-        -90,
         0
       ],
       "translation": [
-        0,
-        -9.75,
-        0
+        2.5,
+        -28,
+        3
       ]
     },
     "firstperson_lefthand": {
       "rotation": [
+        -16,
         0,
-        90,
         0
       ],
       "translation": [
-        0,
-        -9.75,
-        0
+        2.5,
+        -28,
+        3
       ]
     },
     "gui": {
+      "rotation": [
+        -90,
+        -62,
+        -90
+      ],
       "translation": [
-        0.25,
-        -8.5,
+        -6.25,
+        -9.25,
+        0
+      ],
+      "scale": [
+        0.33,
+        0.33,
+        0.33
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        -90,
+        59.5,
+        90
+      ],
+      "translation": [
+        7,
+        -11.75,
         0
       ],
       "scale": [
         0.4,
         0.4,
         0.4
-      ]
-    },
-    "fixed": {
-      "rotation": [
-        0,
-        0,
-        90
-      ],
-      "translation": [
-        13.75,
-        -0.5,
-        0
-      ],
-      "scale": [
-        0.6,
-        0.6,
-        0.6
       ]
     }
   }

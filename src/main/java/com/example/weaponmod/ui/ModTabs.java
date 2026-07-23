@@ -23,5 +23,6 @@ public class ModTabs {
                         output.accept(ModItems.HEALING_SCROLL.get());
                         output.accept(ModItems.TEST_SWORD.get());
                         output.accept(ModItems.NULL_BLADE.get());
+                        output.accept(ModItems.MOON_MARROW_SCYTHE.get());
                     }).build());
 }

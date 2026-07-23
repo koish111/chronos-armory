@@ -8,6 +8,7 @@ import com.example.weaponmod.weaponskill.ChargeManager;
 import com.example.weaponmod.weaponskill.DashManager;
 import com.example.weaponmod.weaponskill.SkillManager;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.Unbreakable;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -45,7 +47,8 @@ public class NullBlade extends SwordItem implements GeoItem {
 
     public NullBlade() {
         super(Tiers.NETHERITE, new SwordItem.Properties().
-                attributes(SwordItem.createAttributes(Tiers.NETHERITE, 7, -2.3f)));
+                attributes(SwordItem.createAttributes(Tiers.NETHERITE, 4, -1.0f))
+                .component(DataComponents.UNBREAKABLE, new Unbreakable(false)));
         ChargeManager.registerWeapon(WEAPON_ID, MAX_CHARGE);
     }
 
