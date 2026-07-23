@@ -26,5 +26,6 @@ public class ModTabs {
                         output.accept(ModItems.MOON_MARROW_SCYTHE.get());
                         output.accept(ModItems.ANTARES_RAPIER.get());
                         output.accept(ModItems.AZURE_MOUNTAINS_MASHER.get());
+                        output.accept(ModItems.GREAT_APPLE.get());
                     }).build());
 }

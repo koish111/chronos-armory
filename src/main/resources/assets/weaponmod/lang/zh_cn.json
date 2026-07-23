@@ -6,7 +6,7 @@
   "item.weaponmod.healing_scroll": "治疗卷轴",
   "item.weaponmod.healing_scroll.tooltip": "每次使用恢复5生命，冷却1秒，耐久10",
   "item.weaponmod.test_sword": "测试之剑",
-  "item.weaponmod.null_katana": "§4空",
+  "item.weaponmod.null_katana": "§8空",
   "item.weaponmod.null_katana.tooltip.line1st": "§d被动技能：",
   "item.weaponmod.null_katana.tooltip.line2nd": "§d造成伤害时，额外造成3点无视护甲的伤害，有8%的概率斩杀当前生命值低于50的敌人；如果敌人的当前生命值大于50小于100，触发斩杀时会造成30伤害；如果敌人的当前生命值大于100，触发斩杀时会造成35 + 敌人当前生命值超出100点部分的10%的伤害。",
   "item.weaponmod.null_katana.tooltip.line3rd": "§d该武器每拥有一条附魔效果，斩杀概率就会增加1%，最多使斩杀概率增加至16%。",
@@ -18,6 +18,7 @@
   "key.weaponmod.null_blade_skill": "空之刃·技能",
   "category.weaponmod": "武器Mod",
   "item.weaponmod.moon_marrow_scythe": "§b月髓",
-  "item.weaponmod.antares_rapier": "§c流火之熄",
-  "item.weaponmod.azure_mountains_masher_sword": "§3苍螭破岳剑"
+  "item.weaponmod.antares_rapier": "§4流火之熄",
+  "item.weaponmod.azure_mountains_masher_sword": "§3苍螭破岳剑",
+  "item.weaponmod.great_apple_heavy_axe": "§c大苹果"
 }
