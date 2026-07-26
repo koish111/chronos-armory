@@ -3,7 +3,6 @@ package com.example.weaponmod.items.model;
 import com.example.weaponmod.WeaponMod;
 import com.example.weaponmod.items.custom.CyanFrostVioletVolt;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.model.GeoModel;
 
 public class CyanFrostVioletVoltModel extends GeoModel<CyanFrostVioletVolt> {
