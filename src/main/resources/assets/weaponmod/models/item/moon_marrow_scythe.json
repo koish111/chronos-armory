@@ -5,10 +5,6 @@
     64,
     64
   ],
-  "textures": {
-    "0": "item/moon_marrow_scythe",
-    "particle": "item/moon_marrow_scythe"
-  },
   "display": {
     "thirdperson_righthand": {
       "translation": [
