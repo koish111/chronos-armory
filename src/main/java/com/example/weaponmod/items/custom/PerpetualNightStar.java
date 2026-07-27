@@ -27,9 +27,11 @@ public class PerpetualNightStar extends TridentItem implements GeoItem {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public PerpetualNightStar() {
-        super(new Item.Properties().
-                attributes(SwordItem.createAttributes(Tiers.NETHERITE, 3, -2.0f))
-                .component(DataComponents.UNBREAKABLE, new Unbreakable(false)));
+        super(new Item.Properties()
+                .stacksTo(1)
+                .durability(MAX_CHARGE)
+                .component(DataComponents.UNBREAKABLE, new Unbreakable(true))
+                .attributes(SwordItem.createAttributes(Tiers.NETHERITE, 3, -2.0f)));
         ChargeManager.registerWeapon(WEAPON_ID, MAX_CHARGE);
     }
 
