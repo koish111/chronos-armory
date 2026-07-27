@@ -5,71 +5,77 @@
     64,
     64
   ],
-  "textures": {
-    "0": "item/great_apple_heavy_axe",
-    "particle": "item/great_apple_heavy_axe"
-  },
   "display": {
     "thirdperson_righthand": {
       "translation": [
         0,
-        -22.25,
-        1
+        -23.75,
+        0.75
       ]
     },
     "thirdperson_lefthand": {
       "translation": [
         0,
-        -22.25,
-        1
+        -23.75,
+        0.75
       ]
     },
     "firstperson_righthand": {
-      "translation": [
+      "rotation": [
+        2,
         0,
-        -26,
         0
+      ],
+      "translation": [
+        4.5,
+        -26,
+        -1
       ]
     },
     "firstperson_lefthand": {
-      "translation": [
+      "rotation": [
+        2,
         0,
-        -26,
         0
+      ],
+      "translation": [
+        4.5,
+        -26,
+        -1
       ]
     },
     "gui": {
       "rotation": [
-        90,
-        90,
+        -90,
+        -45,
         -90
       ],
       "translation": [
-        0,
-        -8,
+        -7.25,
+        -7.75,
         0
       ],
       "scale": [
-        0.35,
-        0.35,
-        0.35
+        0.4,
+        0.4,
+        0.4
       ]
     },
     "fixed": {
       "rotation": [
-        0,
-        90,
-        0
+        -90,
+        45,
+        90
       ],
       "translation": [
-        0,
-        -14.5,
+        9,
+        -9,
         0
       ],
       "scale": [
-        0.6,
-        0.6,
-        0.6
+        0.5,
+        0.5,
+        0.5
       ]
     }
   }

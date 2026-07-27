@@ -47,7 +47,7 @@ public class NullBlade extends SwordItem implements GeoItem {
 
     public NullBlade() {
         super(Tiers.NETHERITE, new SwordItem.Properties().
-                attributes(SwordItem.createAttributes(Tiers.NETHERITE, 4, -1.0f))
+                attributes(SwordItem.createAttributes(Tiers.NETHERITE, 3, -1.0f))
                 .component(DataComponents.UNBREAKABLE, new Unbreakable(false)));
         ChargeManager.registerWeapon(WEAPON_ID, MAX_CHARGE);
     }
