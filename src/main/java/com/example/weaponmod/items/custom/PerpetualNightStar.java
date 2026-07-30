@@ -1,7 +1,6 @@
 package com.example.weaponmod.items.custom;
 
 import com.example.weaponmod.items.renderer.PerpetualNightStarRenderer;
-import com.example.weaponmod.weaponskill.ChargeManager;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +31,6 @@ public class PerpetualNightStar extends TridentItem implements GeoItem {
                 .durability(MAX_CHARGE)
                 .component(DataComponents.UNBREAKABLE, new Unbreakable(true))
                 .attributes(SwordItem.createAttributes(Tiers.NETHERITE, 3, -2.0f)));
-        ChargeManager.registerWeapon(WEAPON_ID, MAX_CHARGE);
     }
 
     @Override

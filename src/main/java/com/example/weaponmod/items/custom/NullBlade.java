@@ -3,7 +3,6 @@ package com.example.weaponmod.items.custom;
 import com.example.weaponmod.entities.ModEntities;
 import com.example.weaponmod.entities.custom.NullBladeDash;
 import com.example.weaponmod.items.renderer.NullBladeRenderer;
-import com.example.weaponmod.network.ChargeSyncPacket;
 import com.example.weaponmod.weaponskill.ChargeManager;
 import com.example.weaponmod.weaponskill.DashManager;
 import com.example.weaponmod.weaponskill.SkillManager;
@@ -18,6 +17,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
@@ -44,12 +44,12 @@ import java.util.function.Consumer;
 public class NullBlade extends SwordItem implements GeoItem {
     public static final ResourceLocation WEAPON_ID = ResourceLocation.fromNamespaceAndPath("weaponmod", "null_blade");
     public static final int MAX_CHARGE = 450;
+    public static final double DASH_DISTANCE = 16.0D;
 
     public NullBlade() {
         super(Tiers.NETHERITE, new SwordItem.Properties().
                 attributes(SwordItem.createAttributes(Tiers.NETHERITE, 3, -1.0f))
                 .component(DataComponents.UNBREAKABLE, new Unbreakable(false)));
-        ChargeManager.registerWeapon(WEAPON_ID, MAX_CHARGE);
     }
 
     private static final RawAnimation ACTIVATE_ANIM = RawAnimation.begin().thenPlay("idle");
@@ -85,7 +85,7 @@ public class NullBlade extends SwordItem implements GeoItem {
                 if (currentHealth < 50.0f) {
                     target.kill();
                     isExecuted = true;
-                } else if(currentHealth >= 50.0f && currentHealth < 100.0f) {
+                } else if (currentHealth >= 50.0f && currentHealth < 100.0f) {
                     target.invulnerableTime = 0;
                     target.hurt(target.damageSources().generic(), 25.0f);
                     target.invulnerableTime = originalInvulnerableTime;
@@ -123,8 +123,8 @@ public class NullBlade extends SwordItem implements GeoItem {
 
         // 手持造成伤害时获得等量充能（V键技能伤害不计入）
         if (attacker instanceof Player playerAttacker && !level.isClientSide()) {
-            float baseDmg = (float) attacker.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE);
-            ChargeManager.addCharge(playerAttacker, WEAPON_ID, Math.round(baseDmg + 3.0f));
+            float baseDmg = (float) attacker.getAttributeValue(Attributes.ATTACK_DAMAGE);
+            ChargeManager.addCharge(playerAttacker, Math.round(baseDmg + 3.0f));
         }
 
         return result;
@@ -134,7 +134,7 @@ public class NullBlade extends SwordItem implements GeoItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         ItemStack stack = player.getItemInHand(usedHand);
         if (!level.isClientSide()) {
-            DashManager.startDash(player, stack);
+            DashManager.startDash(player, stack, DASH_DISTANCE);
 
             player.getCooldowns().addCooldown(stack.getItem(), 20);
             player.sendSystemMessage(Component.literal("已冲刺"));
@@ -145,9 +145,9 @@ public class NullBlade extends SwordItem implements GeoItem {
 
             Vec3 look = player.getLookAngle();
             effect.setPos(
-                    player.getX() + look.x * 1.0,
+                    player.getX() + look.x,
                     player.getY() + 1.0,
-                    player.getZ() + look.z * 1.0
+                    player.getZ() + look.z
             );
 
             effect.setYRot(player.getYRot());
@@ -162,9 +162,9 @@ public class NullBlade extends SwordItem implements GeoItem {
         if (level.isClientSide()) return;
 
         // 检查充能（满MAX_CHARGE点才能释放）
-        if (!ChargeManager.tryConsumeFull(player, WEAPON_ID)) {
-            int current = ChargeManager.getCharge(player, WEAPON_ID);
-            player.sendSystemMessage(Component.literal("§c充能不足 (" + current + "/" + ChargeManager.getMaxCharge(WEAPON_ID) + ")"));
+        if (!ChargeManager.tryConsumeFull(player)) {
+            int current = ChargeManager.getCharge(player);
+            player.sendSystemMessage(Component.literal("§c充能不足 (" + current + "/" + ChargeManager.getMaxCharge() + ")"));
             return;
         }
 
@@ -232,8 +232,8 @@ public class NullBlade extends SwordItem implements GeoItem {
         tooltipComponents.add(Component.translatable("item.weaponmod.null_katana.tooltip.line6th"));
 
         // 显示充能
-        int charge = ChargeSyncPacket.clientCharges.getOrDefault(WEAPON_ID, 0);
-        int max = ChargeSyncPacket.clientMaxCharges.getOrDefault(WEAPON_ID, MAX_CHARGE);
+        int charge = ChargeManager.getCharge();
+        int max = ChargeManager.getMaxCharge();
         tooltipComponents.add(Component.literal("§7充能: §e" + charge + "§7/§e" + max));
 
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
@@ -262,7 +262,7 @@ public class NullBlade extends SwordItem implements GeoItem {
         if (!entities.isEmpty()) {
             // 找到视线方向上最近的实体
             return entities.stream()
-                    .min(Comparator.comparingDouble(e -> player.distanceToSqr(e)))
+                    .min(Comparator.comparingDouble(player::distanceToSqr))
                     .orElse(null);
         }
 

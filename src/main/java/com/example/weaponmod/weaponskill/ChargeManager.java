@@ -1,81 +1,151 @@
 package com.example.weaponmod.weaponskill;
 
-import com.example.weaponmod.network.ChargeSyncPacket;
+import com.example.weaponmod.attachments.ModAttachments;
+import com.example.weaponmod.items.custom.AntaresRapier;
+import com.example.weaponmod.items.custom.AzureMountainsMasher;
+import com.example.weaponmod.items.custom.CyanFrostVioletVolt;
+import com.example.weaponmod.items.custom.GreatApple;
+import com.example.weaponmod.items.custom.MoonMarrowScythe;
+import com.example.weaponmod.items.custom.NullBlade;
+import com.example.weaponmod.items.custom.PerpetualNightStar;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.attachment.AttachmentType;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-public class ChargeManager {
-    // player UUID → weapon ID → 当前充能
-    private static final Map<UUID, Map<ResourceLocation, Integer>> playerCharges = new HashMap<>();
-    // weapon ID → 该武器的最大充能
-    private static final Map<ResourceLocation, Integer> maxCharges = new HashMap<>();
-
-    /** 注册一把武器的最大充能值（在武器初始化时调用） */
-    public static void registerWeapon(ResourceLocation weaponId, int maxCharge) {
-        maxCharges.put(weaponId, maxCharge);
+public final class ChargeManager {
+    private ChargeManager() {
     }
 
-    /** 获取武器最大充能 */
+    public static int getMaxCharge() {
+        return NullBlade.MAX_CHARGE;
+    }
+
     public static int getMaxCharge(ResourceLocation weaponId) {
-        return maxCharges.getOrDefault(weaponId, 0);
+        if (weaponId.equals(NullBlade.WEAPON_ID)) {
+            return NullBlade.MAX_CHARGE;
+        }
+        if (weaponId.equals(MoonMarrowScythe.WEAPON_ID)) {
+            return MoonMarrowScythe.MAX_CHARGE;
+        }
+        if (weaponId.equals(AntaresRapier.WEAPON_ID)) {
+            return AntaresRapier.MAX_CHARGE;
+        }
+        if (weaponId.equals(AzureMountainsMasher.WEAPON_ID)) {
+            return AzureMountainsMasher.MAX_CHARGE;
+        }
+        if (weaponId.equals(GreatApple.WEAPON_ID)) {
+            return GreatApple.MAX_CHARGE;
+        }
+        if (weaponId.equals(PerpetualNightStar.WEAPON_ID)) {
+            return PerpetualNightStar.MAX_CHARGE;
+        }
+        if (weaponId.equals(CyanFrostVioletVolt.WEAPON_ID)) {
+            return CyanFrostVioletVolt.MAX_CHARGE;
+        }
+
+        return 0;
     }
 
-    /** 获取玩家对某武器的当前充能 */
+    public static int getCharge(Player player) {
+        return getCharge(player, NullBlade.WEAPON_ID);
+    }
+
     public static int getCharge(Player player, ResourceLocation weaponId) {
-        return playerCharges.getOrDefault(player.getUUID(), Map.of()).getOrDefault(weaponId, 0);
+        AttachmentType<Integer> attachment = getAttachment(weaponId);
+        int maxCharge = getMaxCharge(weaponId);
+        return attachment == null || maxCharge <= 0
+                ? 0
+                : Math.min(player.getData(attachment), maxCharge);
     }
 
-    /** 增加对某武器的充能 */
+    public static int getCharge() {
+        LocalPlayer player = Minecraft.getInstance().player;
+        return player == null ? 0 : ChargeManager.getCharge(player);
+    }
+
+    public static void addCharge(Player player, int amount) {
+        addCharge(player, NullBlade.WEAPON_ID, amount);
+    }
+
     public static void addCharge(Player player, ResourceLocation weaponId, int amount) {
-        int max = getMaxCharge(weaponId);
-        if (max <= 0) return; // 未注册的武器不充能
-        int newVal = Math.min(
-                playerCharges.computeIfAbsent(player.getUUID(), k -> new HashMap<>())
-                        .getOrDefault(weaponId, 0) + amount,
-                max
-        );
-        playerCharges.get(player.getUUID()).put(weaponId, newVal);
-        syncToClient(player, weaponId);
+        AttachmentType<Integer> attachment = getAttachment(weaponId);
+        int maxCharge = getMaxCharge(weaponId);
+        if (maxCharge <= 0 || amount == 0) {
+            return;
+        }
+
+        int oldCharge = getCharge(player, weaponId);
+        int newCharge = Math.clamp((long) oldCharge + amount, 0, maxCharge);
+        if (newCharge == oldCharge) {
+            return;
+        }
+
+        player.setData(attachment, newCharge);
+        player.syncData(attachment);
     }
 
-    /** 尝试消耗某武器的全部充能（必须已满才能消耗），返回是否成功 */
+    /** 必须充满后才能消耗，成功时将充能归零。 */
+    public static boolean tryConsumeFull(Player player) {
+        return tryConsumeFull(player, NullBlade.WEAPON_ID);
+    }
+
+    /** 必须充满后才能消耗，成功时将指定武器的充能归零。 */
     public static boolean tryConsumeFull(Player player, ResourceLocation weaponId) {
-        Map<ResourceLocation, Integer> map = playerCharges.get(player.getUUID());
-        if (map == null) return false;
-        Integer val = map.get(weaponId);
-        int max = getMaxCharge(weaponId);
-        if (val == null || val < max) return false;
-        map.put(weaponId, 0);
-        syncToClient(player, weaponId);
+        AttachmentType<Integer> attachment = getAttachment(weaponId);
+        int maxCharge = getMaxCharge(weaponId);
+        if (attachment == null || maxCharge <= 0 || getCharge(player, weaponId) < maxCharge) {
+            return false;
+        }
+
+        player.setData(attachment, 0);
+        player.syncData(attachment);
         return true;
     }
 
-    /** 同步某武器的充能值到客户端 */
-    private static void syncToClient(Player player, ResourceLocation weaponId) {
-        if (player instanceof ServerPlayer sp) {
-            int charge = playerCharges
-                    .getOrDefault(player.getUUID(), Map.of())
-                    .getOrDefault(weaponId, 0);
-            int max = getMaxCharge(weaponId);
-            PacketDistributor.sendToPlayer(sp, new ChargeSyncPacket(weaponId, charge, max));
+    /** 每 10 tick 增加 1 点充能。 */
+    public static void tickPassive(ServerLevel level) {
+        if (level.getGameTime() % 10 != 0) {
+            return;
+        }
+
+        for (ServerPlayer player : level.players()) {
+            addCharge(player, NullBlade.WEAPON_ID, 1);
+            addCharge(player, MoonMarrowScythe.WEAPON_ID, 1);
+            addCharge(player, AntaresRapier.WEAPON_ID, 1);
+            addCharge(player, AzureMountainsMasher.WEAPON_ID, 1);
+            addCharge(player, GreatApple.WEAPON_ID, 1);
+            addCharge(player, PerpetualNightStar.WEAPON_ID, 1);
+            addCharge(player, CyanFrostVioletVolt.WEAPON_ID, 1);
         }
     }
 
-    /** 被动充能：所有已注册武器每秒+2，由 ServerTickHandler 每 tick 调用 */
-    public static void tickPassive(ServerLevel level) {
-        long gameTime = level.getGameTime();
-        if (gameTime % 10 != 0) return; // 每10tick+1 = 每秒+2
-        for (ServerPlayer player : level.players()) {
-            for (ResourceLocation weaponId : maxCharges.keySet()) {
-                addCharge(player, weaponId, 1);
-            }
+    private static AttachmentType<Integer> getAttachment(ResourceLocation weaponId) {
+        if (weaponId.equals(NullBlade.WEAPON_ID)) {
+            return ModAttachments.NULL_BLADE_CHARGE.get();
         }
+        if (weaponId.equals(MoonMarrowScythe.WEAPON_ID)) {
+            return ModAttachments.MOON_MARROW_SCYTHE_CHARGE.get();
+        }
+        if (weaponId.equals(AntaresRapier.WEAPON_ID)) {
+            return ModAttachments.ANTARES_RAPIER_CHARGE.get();
+        }
+        if (weaponId.equals(AzureMountainsMasher.WEAPON_ID)) {
+            return ModAttachments.AZURE_MOUNTAINS_MASHER_CHARGE.get();
+        }
+        if (weaponId.equals(GreatApple.WEAPON_ID)) {
+            return ModAttachments.GREAT_APPLE_CHARGE.get();
+        }
+        if (weaponId.equals(PerpetualNightStar.WEAPON_ID)) {
+            return ModAttachments.PERPETUAL_NIGHT_STAR_CHARGE.get();
+        }
+        if (weaponId.equals(CyanFrostVioletVolt.WEAPON_ID)) {
+            return ModAttachments.CYAN_FROST_VIOLET_VOLT_CHARGE.get();
+        }
+
+        return null;
     }
 }
