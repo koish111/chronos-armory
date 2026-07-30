@@ -1,7 +1,6 @@
 package com.example.weaponmod.items.custom;
 
 import com.example.weaponmod.items.renderer.AntaresRapierRenderer;
-import com.example.weaponmod.weaponskill.ChargeManager;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
@@ -29,7 +28,6 @@ public class AntaresRapier extends SwordItem implements GeoItem {
         super(Tiers.NETHERITE, new Item.Properties().
                 attributes(SwordItem.createAttributes(Tiers.NETHERITE, 10, -2.2f))
                 .component(DataComponents.UNBREAKABLE, new Unbreakable(false)));
-        ChargeManager.registerWeapon(WEAPON_ID, MAX_CHARGE);
     }
 
     @Override

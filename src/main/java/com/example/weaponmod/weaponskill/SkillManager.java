@@ -1,6 +1,5 @@
 package com.example.weaponmod.weaponskill;
 
-import com.example.weaponmod.particles.ModParticles;
 import com.example.weaponmod.pojo.NullBladeParticleOption;
 import com.example.weaponmod.pojo.SkillData;
 import com.example.weaponmod.sounds.ModSounds;
@@ -119,14 +118,12 @@ public class SkillManager {
         if (currentHealth < 50.0f) {
             target.kill();
             isExecuted = true;
-        }
-        else if (currentHealth >= 50.0f && currentHealth < 100.0f) {
+        } else if (currentHealth >= 50.0f && currentHealth < 100.0f) {
             target.invulnerableTime = 0;
             target.hurt(target.damageSources().playerAttack(player), 25.0f);
             target.invulnerableTime = originalInvulnerableTime;
             isExecuted = true;
-        }
-        else if (currentHealth >= 100.0f) {
+        } else if (currentHealth >= 100.0f) {
             float x = currentHealth - 100.0f;
             float damage = 35.0f + 0.1f * x;
             target.invulnerableTime = 0;

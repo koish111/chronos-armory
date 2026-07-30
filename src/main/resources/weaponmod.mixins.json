@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.example.weaponmod.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "LivingEntityAccessor"
+  ],
+  "client": [
+    "client.LivingEntityRendererMixin",
+    "client.SpinAttackEffectLayerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

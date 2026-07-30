@@ -1,10 +1,10 @@
 package com.example.weaponmod;
 
+import com.example.weaponmod.attachments.ModAttachments;
 import com.example.weaponmod.effects.ModEffects;
 import com.example.weaponmod.entities.ModEntities;
 import com.example.weaponmod.items.ModItems;
 import com.example.weaponmod.items.custom.NaginataSword;
-import com.example.weaponmod.network.ChargeSyncPacket;
 import com.example.weaponmod.network.NullBladeSkillPacket;
 import com.example.weaponmod.particles.ModParticles;
 import com.example.weaponmod.sounds.ModSounds;
@@ -32,6 +32,7 @@ public class WeaponMod {
         ModEntities.register(modEventBus);
         ModParticles.PARTICLE_TYPES.register(modEventBus);
         ModSounds.register(modEventBus);
+        ModAttachments.register(modEventBus);
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(this::onRegisterPayloads);
     }
@@ -45,6 +46,5 @@ public class WeaponMod {
     private void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar(MODID);
         registrar.playToServer(NullBladeSkillPacket.TYPE, NullBladeSkillPacket.CODEC, NullBladeSkillPacket::handle);
-        registrar.playToClient(ChargeSyncPacket.TYPE, ChargeSyncPacket.CODEC, ChargeSyncPacket::handle);
     }
 }

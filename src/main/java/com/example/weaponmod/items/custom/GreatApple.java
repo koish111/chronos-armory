@@ -1,7 +1,6 @@
 package com.example.weaponmod.items.custom;
 
 import com.example.weaponmod.items.renderer.GreatAppleRenderer;
-import com.example.weaponmod.weaponskill.ChargeManager;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +29,6 @@ public class GreatApple extends AxeItem implements GeoItem {
         super(Tiers.NETHERITE, new Item.Properties().
                 attributes(SwordItem.createAttributes(Tiers.NETHERITE, 16, -3.3f))
                 .component(DataComponents.UNBREAKABLE, new Unbreakable(false)));
-        ChargeManager.registerWeapon(WEAPON_ID, MAX_CHARGE);
     }
 
     @Override
