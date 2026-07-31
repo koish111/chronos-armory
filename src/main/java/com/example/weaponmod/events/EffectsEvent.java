@@ -51,7 +51,7 @@ public class EffectsEvent {
 
         // 调试输出
         entity.sendSystemMessage(
-                Component.literal("[护盾测试] 剩余护盾: " + nbt.getFloat(ShieldData.NBT_KEY))
+                Component.translatable("message.weaponmod.shield.remaining", nbt.getFloat(ShieldData.NBT_KEY))
         );
 
         // 如果护盾被耗尽，可以移除效果（可选）

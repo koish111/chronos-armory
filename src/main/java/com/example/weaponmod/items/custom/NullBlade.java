@@ -137,7 +137,7 @@ public class NullBlade extends SwordItem implements GeoItem {
             DashManager.startDash(player, stack, DASH_DISTANCE);
 
             player.getCooldowns().addCooldown(stack.getItem(), 20);
-            player.sendSystemMessage(Component.literal("已冲刺"));
+            player.sendSystemMessage(Component.translatable("message.weaponmod.null_blade.dash"));
 
 
             // ===== 生成特效 =====
@@ -164,7 +164,11 @@ public class NullBlade extends SwordItem implements GeoItem {
         // 检查充能（满MAX_CHARGE点才能释放）
         if (!ChargeManager.tryConsumeFull(player)) {
             int current = ChargeManager.getCharge(player);
-            player.sendSystemMessage(Component.literal("§c充能不足 (" + current + "/" + ChargeManager.getMaxCharge() + ")"));
+            player.sendSystemMessage(Component.translatable(
+                    "message.weaponmod.null_blade.insufficient_charge",
+                    current,
+                    ChargeManager.getMaxCharge()
+            ));
             return;
         }
 
@@ -204,9 +208,12 @@ public class NullBlade extends SwordItem implements GeoItem {
         SkillManager.startSkill(player, hitPos, targetEntity);
 
         if (targetEntity != null) {
-            player.sendSystemMessage(Component.literal("锁定目标: " + targetEntity.getName().getString()));
+            player.sendSystemMessage(Component.translatable(
+                    "message.weaponmod.null_blade.target_locked",
+                    targetEntity.getDisplayName()
+            ));
         } else {
-            player.sendSystemMessage(Component.literal("已触发技能"));
+            player.sendSystemMessage(Component.translatable("message.weaponmod.null_blade.skill_activated"));
         }
     }
 
@@ -227,14 +234,14 @@ public class NullBlade extends SwordItem implements GeoItem {
         tooltipComponents.add(Component.translatable("item.weaponmod.null_katana.tooltip.line2nd"));
         tooltipComponents.add(Component.translatable("item.weaponmod.null_katana.tooltip.line3rd"));
         tooltipComponents.add(Component.translatable("item.weaponmod.null_katana.tooltip.line4th", chancePercent));
-        tooltipComponents.add(Component.translatable("\n"));
+        tooltipComponents.add(Component.empty());
         tooltipComponents.add(Component.translatable("item.weaponmod.null_katana.tooltip.line5th"));
         tooltipComponents.add(Component.translatable("item.weaponmod.null_katana.tooltip.line6th"));
 
         // 显示充能
         int charge = ChargeManager.getCharge();
         int max = ChargeManager.getMaxCharge();
-        tooltipComponents.add(Component.literal("§7充能: §e" + charge + "§7/§e" + max));
+        tooltipComponents.add(Component.translatable("item.weaponmod.null_katana.tooltip.charge", charge, max));
 
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
