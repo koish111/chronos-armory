@@ -13,6 +13,7 @@
   "item.weaponmod.null_katana.tooltip.line4th": "§c当前斩杀概率：%s%%",
   "item.weaponmod.null_katana.tooltip.line5th": "§d主动技能：",
   "item.weaponmod.null_katana.tooltip.line6th": "§d对自身周围8米内的瞄准位置周围4米内的所有敌人造成12点伤害，重复六次。当你以敌人为目标时，会对该敌人触发一次斩杀。冷却10秒。",
+  "item.weaponmod.null_katana.tooltip.charge": "§7充能：§e%s§7/§e%s",
   "effect.weaponmod.shield": "护盾",
   "entity.weaponmod.test_monster": "测试怪物",
   "key.weaponmod.null_blade_skill": "空之刃·技能",
@@ -23,5 +24,12 @@
   "item.weaponmod.azure_mountains_masher_sword": "§3苍螭破岳剑",
   "item.weaponmod.great_apple_heavy_axe": "§c大苹果",
   "item.weaponmod.perpetual_nightstar_trident": "§6永夜飞星",
-  "item.weaponmod.cyanfrost_violetvolt_katana": "§d青霜紫电"
+  "item.weaponmod.cyanfrost_violetvolt_katana": "§d青霜紫电",
+  "message.weaponmod.shield.gained": "[护盾测试] 获得护盾：%s",
+  "message.weaponmod.shield.remaining": "[护盾测试] 剩余护盾：%s",
+  "message.weaponmod.curse.consumed": "你被诅咒的力量吞噬了",
+  "message.weaponmod.null_blade.dash": "已冲刺",
+  "message.weaponmod.null_blade.insufficient_charge": "§c充能不足（%s/%s）",
+  "message.weaponmod.null_blade.target_locked": "锁定目标：%s",
+  "message.weaponmod.null_blade.skill_activated": "已触发技能"
 }

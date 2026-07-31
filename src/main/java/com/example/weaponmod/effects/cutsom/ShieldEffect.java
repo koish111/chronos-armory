@@ -25,7 +25,7 @@ public class ShieldEffect extends MobEffect {
         // 仅在服务器端发消息
         if (!entity.level().isClientSide()) {
             entity.sendSystemMessage(
-                    Component.literal("[护盾测试] 获得护盾: " + (current + added))
+                    Component.translatable("message.weaponmod.shield.gained", current + added)
             );
         }
     }

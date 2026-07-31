@@ -1,5 +1,6 @@
 package com.example.weaponmod.weaponskill;
 
+import com.example.weaponmod.WeaponMod;
 import com.example.weaponmod.attachments.ModAttachments;
 import com.example.weaponmod.items.custom.AntaresRapier;
 import com.example.weaponmod.items.custom.AzureMountainsMasher;
@@ -17,37 +18,25 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.attachment.AttachmentType;
 
 public final class ChargeManager {
-    private ChargeManager() {
-    }
 
     public static int getMaxCharge() {
         return NullBlade.MAX_CHARGE;
     }
 
     public static int getMaxCharge(ResourceLocation weaponId) {
-        if (weaponId.equals(NullBlade.WEAPON_ID)) {
-            return NullBlade.MAX_CHARGE;
+        if (!WeaponMod.MODID.equals(weaponId.getNamespace())) {
+            return 0;
         }
-        if (weaponId.equals(MoonMarrowScythe.WEAPON_ID)) {
-            return MoonMarrowScythe.MAX_CHARGE;
-        }
-        if (weaponId.equals(AntaresRapier.WEAPON_ID)) {
-            return AntaresRapier.MAX_CHARGE;
-        }
-        if (weaponId.equals(AzureMountainsMasher.WEAPON_ID)) {
-            return AzureMountainsMasher.MAX_CHARGE;
-        }
-        if (weaponId.equals(GreatApple.WEAPON_ID)) {
-            return GreatApple.MAX_CHARGE;
-        }
-        if (weaponId.equals(PerpetualNightStar.WEAPON_ID)) {
-            return PerpetualNightStar.MAX_CHARGE;
-        }
-        if (weaponId.equals(CyanFrostVioletVolt.WEAPON_ID)) {
-            return CyanFrostVioletVolt.MAX_CHARGE;
-        }
-
-        return 0;
+        return switch (weaponId.getPath()) {
+            case "null_blade" -> NullBlade.MAX_CHARGE;
+            case "moon_marrow_scythe" -> MoonMarrowScythe.MAX_CHARGE;
+            case "antares_rapier" -> AntaresRapier.MAX_CHARGE;
+            case "azure_mountains_masher_sword" -> AzureMountainsMasher.MAX_CHARGE;
+            case "great_apple_heavy_axe" -> GreatApple.MAX_CHARGE;
+            case "perpetual_nightstar_trident" -> PerpetualNightStar.MAX_CHARGE;
+            case "cyanfrost_violetvolt_katana" -> CyanFrostVioletVolt.MAX_CHARGE;
+            default -> 0;
+        };
     }
 
     public static int getCharge(Player player) {
@@ -124,28 +113,18 @@ public final class ChargeManager {
     }
 
     private static AttachmentType<Integer> getAttachment(ResourceLocation weaponId) {
-        if (weaponId.equals(NullBlade.WEAPON_ID)) {
-            return ModAttachments.NULL_BLADE_CHARGE.get();
+        if (!WeaponMod.MODID.equals(weaponId.getNamespace())) {
+            return null;
         }
-        if (weaponId.equals(MoonMarrowScythe.WEAPON_ID)) {
-            return ModAttachments.MOON_MARROW_SCYTHE_CHARGE.get();
-        }
-        if (weaponId.equals(AntaresRapier.WEAPON_ID)) {
-            return ModAttachments.ANTARES_RAPIER_CHARGE.get();
-        }
-        if (weaponId.equals(AzureMountainsMasher.WEAPON_ID)) {
-            return ModAttachments.AZURE_MOUNTAINS_MASHER_CHARGE.get();
-        }
-        if (weaponId.equals(GreatApple.WEAPON_ID)) {
-            return ModAttachments.GREAT_APPLE_CHARGE.get();
-        }
-        if (weaponId.equals(PerpetualNightStar.WEAPON_ID)) {
-            return ModAttachments.PERPETUAL_NIGHT_STAR_CHARGE.get();
-        }
-        if (weaponId.equals(CyanFrostVioletVolt.WEAPON_ID)) {
-            return ModAttachments.CYAN_FROST_VIOLET_VOLT_CHARGE.get();
-        }
-
-        return null;
+        return switch (weaponId.getPath()) {
+            case "null_blade" -> ModAttachments.NULL_BLADE_CHARGE.get();
+            case "moon_marrow_scythe" -> ModAttachments.MOON_MARROW_SCYTHE_CHARGE.get();
+            case "antares_rapier" -> ModAttachments.ANTARES_RAPIER_CHARGE.get();
+            case "azure_mountains_masher_sword" -> ModAttachments.AZURE_MOUNTAINS_MASHER_CHARGE.get();
+            case "great_apple_heavy_axe" -> ModAttachments.GREAT_APPLE_CHARGE.get();
+            case "perpetual_nightstar_trident" -> ModAttachments.PERPETUAL_NIGHT_STAR_CHARGE.get();
+            case "cyanfrost_violetvolt_katana" -> ModAttachments.CYAN_FROST_VIOLET_VOLT_CHARGE.get();
+            default -> null;
+        };
     }
 }

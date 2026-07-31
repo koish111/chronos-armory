@@ -22,7 +22,7 @@ public class EventHandler {
         if(!(event.getSource().getEntity() instanceof LivingEntity)) return;
         if(isHoldingCurseBlade(player)) {
             player.setHealth(0.0F);
-            player.sendSystemMessage(Component.literal("你被诅咒的力量吞噬了"));
+            player.sendSystemMessage(Component.translatable("message.weaponmod.curse.consumed"));
         }
     }
 
