@@ -7,6 +7,7 @@ import com.example.weaponmod.items.ModItems;
 import com.example.weaponmod.items.custom.NaginataSword;
 import com.example.weaponmod.network.NullBladeSkillPacket;
 import com.example.weaponmod.particles.ModParticles;
+import com.example.weaponmod.potions.ModPotions;
 import com.example.weaponmod.sounds.ModSounds;
 import com.example.weaponmod.ui.ModTabs;
 import com.mojang.logging.LogUtils;
@@ -32,6 +33,7 @@ public class WeaponMod {
         ModEntities.register(modEventBus);
         ModParticles.PARTICLE_TYPES.register(modEventBus);
         ModSounds.register(modEventBus);
+        ModPotions.register(modEventBus);
         ModAttachments.register(modEventBus);
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(this::onRegisterPayloads);
