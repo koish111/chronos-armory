@@ -28,6 +28,14 @@ public final class ModAttachments {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Integer>> CYAN_FROST_VIOLET_VOLT_CHARGE =
             registerCharge("cyan_frost_violet_volt_charge");
 
+    /** 无形效果在 PvP 开启时的完全隐形标记。仅运行期同步，不入存档，由 EffectsEvent 按效果状态维护。 */
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> UNSEEN_PVP_INVISIBLE =
+            ATTACHMENT_TYPES.register(
+                    "unseen_pvp_invisible",
+                    () -> AttachmentType.builder(() -> false)
+                            .sync(ByteBufCodecs.BOOL)
+                            .build());
+
     private static DeferredHolder<AttachmentType<?>, AttachmentType<Integer>> registerCharge(String name) {
         return ATTACHMENT_TYPES.register(
                 name,

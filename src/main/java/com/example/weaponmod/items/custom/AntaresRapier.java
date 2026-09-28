@@ -3,10 +3,13 @@ package com.example.weaponmod.items.custom;
 import com.example.weaponmod.items.renderer.AntaresRapierRenderer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.Unbreakable;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoItem;
@@ -16,6 +19,7 @@ import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 public class AntaresRapier extends SwordItem implements GeoItem {
@@ -28,6 +32,15 @@ public class AntaresRapier extends SwordItem implements GeoItem {
         super(Tiers.NETHERITE, new Item.Properties().
                 attributes(SwordItem.createAttributes(Tiers.NETHERITE, 10, -2.2f))
                 .component(DataComponents.UNBREAKABLE, new Unbreakable(false)));
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        tooltipComponents.add(Component.translatable("item.weaponmod.antares_rapier.tooltip.passive1_name"));
+        tooltipComponents.add(Component.translatable("item.weaponmod.antares_rapier.tooltip.passive1_desc"));
+        tooltipComponents.add(Component.translatable("item.weaponmod.antares_rapier.tooltip.passive2_name"));
+        tooltipComponents.add(Component.translatable("item.weaponmod.antares_rapier.tooltip.passive2_desc"));
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 
     @Override

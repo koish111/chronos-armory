@@ -27,3 +27,6 @@ repo
 
 .vscode
 .local-maven-repo
+
+# 临时解包/反编译参考源码，禁止追踪
+.tmp

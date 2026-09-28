@@ -2,10 +2,13 @@ package com.example.weaponmod.ui;
 
 import com.example.weaponmod.WeaponMod;
 import com.example.weaponmod.items.ModItems;
+import com.example.weaponmod.potions.ModPotions;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -19,6 +22,9 @@ public class ModTabs {
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModItems.RUBY.get());
                         output.accept(ModItems.RAW_RUBY.get());
+                        output.accept(PotionContents.createItemStack(Items.POTION, ModPotions.BLACKFIRE));
+                        output.accept(PotionContents.createItemStack(Items.POTION, ModPotions.DISSOLVE));
+                        output.accept(PotionContents.createItemStack(Items.POTION, ModPotions.UNSEEN));
                         output.accept(ModItems.NAGINATA_SWORD.get());
                         output.accept(ModItems.HEALING_SCROLL.get());
                         output.accept(ModItems.TEST_SWORD.get());
